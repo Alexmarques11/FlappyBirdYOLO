@@ -36,15 +36,14 @@ class Flappy:
             images=images,
             sounds=Sounds(),
         )
-        self.cap = cv2.VideoCapture(0)  # Inicialize a captura de vídeo aqui
+        self.cap = cv2.VideoCapture(0)
         self.phone_class_index = 67
 
-        self.model = YOLO("yolov8n.pt")  # Carregue o modelo YOLO
+        self.model = YOLO("yolov8n.pt")
         print("Known classes ({})".format(len(self.model.names)))
         for i in range(len(self.model.names)):
             print("{} : {}".format(i, self.model.names[i]))
 
-        # Variáveis para exibir janelas
         self.show_camara = True
     async def start(self):
 
@@ -183,10 +182,9 @@ class Flappy:
                 class_id = int(box[5])
 
                 if class_id == self.phone_class_index:
-                    # Atualize a posição do jogador apenas se uma detecção for encontrada
+
                     self.player.update_position((pt1[1] + pt2[1]) / 2)
 
-                    # Desenhe a caixa delimitadora apenas para a classe correspondente (maçã)
                     cv2.rectangle(img=image_objects, pt1=pt1, pt2=pt2, color=(0, 255, 0), thickness=2)
                     text = "{}:{:.2f}".format(objects.names[class_id], confidence)
                     cv2.putText(img=image_objects,
@@ -194,7 +192,7 @@ class Flappy:
                                 org=np.array(np.round((float(box[0]), float(box[1] - 1))), dtype=int),
                                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                                 fontScale=0.5,
-                                color=(0, 255, 0),  # Cor verde para indicar maçã
+                                color=(0, 255, 0),
                                 thickness=1)
 
             image_objects = cv2.cvtColor(src=image_objects, code=cv2.COLOR_RGB2BGR)
@@ -216,4 +214,4 @@ class Flappy:
         return m_left or space_or_up or screen_tap
 
     def __del__(self):
-        self.cap.release()  # Libere a câmera quando o objeto Flappy é destruído
+        self.cap.release()
